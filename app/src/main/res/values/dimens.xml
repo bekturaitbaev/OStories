@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="default_segment_margin">8dp</dimen>
+    <dimen name="default_corner_radius">0dp</dimen>
+    <dimen name="default_segment_stroke_width">0dp</dimen>
+</resources>
