@@ -1,14 +1,18 @@
 package kg.nurtelecom.ostories.story
 
-import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.AttributeSet
+import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewConfiguration
 import android.view.ViewGroup
-import kg.nurtelecom.ostories.R
-import kg.nurtelecom.ostories.databinding.FragmentStoryBinding
+import androidx.core.view.GestureDetectorCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.viewpager2.widget.ViewPager2
 import kg.nurtelecom.ostories.databinding.FragmentStoryViewBinding
 import kg.nurtelecom.ostories.extensions.loadImage
 import kg.nurtelecom.ostories.model.Highlight
@@ -18,9 +22,13 @@ import kg.nurtelecom.ostories.progress.OStoriesProgressBarListener
 class StoryViewFragment : Fragment(), View.OnTouchListener {
 
     private lateinit var binding: FragmentStoryViewBinding
+    private val viewModel: StorySharedViewModel by viewModels({ requireParentFragment() })
     private var highlight: Highlight? = null
     private var listener: OStoriesListener? = null
     private var touchStartTime = 0L
+    private var lastFocusX = 0f
+    private var lastFocusY = 0f
+    private var touchStillDown = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,11 +46,19 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpClicks()
-        val indexToShow = highlight?.stories?.indexOfFirst { !it.isWatched }?.let {
-            if (it == -1) 0 else it
-        } ?: 0
-        setUpOStoriesProgressBar(indexToShow)
+        setUpOStoriesProgressBar(getIndexToShow())
+
+        viewModel.vpScrollStateLD.observe(requireParentFragment().viewLifecycleOwner) {
+            when(it) {
+                ViewPager2.SCROLL_STATE_DRAGGING -> binding.progress.pause()
+                ViewPager2.SCROLL_STATE_IDLE -> binding.progress.resume()
+            }
+        }
     }
+
+    private fun getIndexToShow() = highlight?.stories?.indexOfFirst { !it.isWatched }?.let {
+        if (it == -1) 0 else it
+    } ?: 0
 
     private fun setUpClicks() = with(binding) {
         viewLeft.setOnClickListener { progress.previous() }
@@ -73,35 +89,45 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
 
     override fun onResume() {
         super.onResume()
-        binding.progress.listener = oStoriesProgressBarListener
         binding.progress.resume()
     }
 
     override fun onPause() {
         super.onPause()
+        binding.progress.setPosition(getIndexToShow())
         binding.progress.pause()
-        binding.progress.listener = null
     }
 
     private fun loadImage(story: Story?) = with(binding) {
         progress.pause()
         storyImage.loadImage(story?.image) {
-            story?.isWatched = true
-            progress.resume()
+            if (this@StoryViewFragment.isResumed) {
+                story?.isWatched = true
+                progress.resume()
+            }
         }
     }
 
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
         when(event?.action) {
             MotionEvent.ACTION_DOWN -> {
+                lastFocusX = event.x
+                lastFocusY = event.y
                 touchStartTime = event.eventTime
                 binding.progress.pause()
+                touchStillDown = true
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 val touchEndTime = event.eventTime
                 binding.progress.resume()
-                if (touchEndTime - touchStartTime > TOUCH_DURATION) return true
+                if (touchEndTime - touchStartTime > TOUCH_DURATION) return false
+                val touchSlopeSquare = ViewConfiguration.get(requireContext()).scaledTouchSlop
+                val deltaX = event.x - lastFocusX
+                val deltaY = event.y - lastFocusY
+                val slope = deltaX * deltaX + deltaY * deltaY
+                if (slope > touchSlopeSquare) return false
                 v?.performClick()
+                return true
             }
         }
         return true
@@ -118,4 +144,10 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
                 highlight = item
             }
     }
+}
+
+class MyView(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0): View(context, attrs, defStyle) {
+
+
+
 }

@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import kg.nurtelecom.ostories.R
@@ -17,6 +18,7 @@ import kg.nurtelecom.ostories.model.StoryMock
 class StoryFragment() : Fragment(), OStoriesListener {
 
     private lateinit var binding: FragmentStoryBinding
+    private val viewModel: StorySharedViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,6 +37,16 @@ class StoryFragment() : Fragment(), OStoriesListener {
         viewPager.adapter = adapter
         viewPager.offscreenPageLimit = 1
         viewPager.setPageTransformer(CubeTransformer())
+        viewPager.registerOnPageChangeCallback(object : OnPageChangeCallback() {
+            override fun onPageScrollStateChanged(state: Int) {
+                super.onPageScrollStateChanged(state)
+                viewModel.onScrollStateChange(state)
+            }
+        })
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 
     companion object {
