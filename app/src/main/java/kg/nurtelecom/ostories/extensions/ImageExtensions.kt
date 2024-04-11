@@ -35,3 +35,9 @@ fun ImageView.loadImage(url: String?, onImageLoaded: () -> Unit) {
         })
         .into(this)
 }
+
+fun ImageView.loadImage(url: String?) {
+    Glide.with(this)
+        .load(url)
+        .into(this)
+}

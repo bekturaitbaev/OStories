@@ -10,36 +10,45 @@ data class Story(
 
 data class Highlight(
     val id: Long? = null,
+    val title: String? = "Все события",
     val image: String? = null,
-    val stories: List<Story> = emptyList()
+    val stories: List<Story> = emptyList(),
+    val isMarketingCenter: Boolean = false
 )
 
 object StoryMock {
     fun fetchHighlights() = listOf(
         Highlight(
             1,
-            "https://img.freepik.com/free-photo/luxurious-car-parked-highway-with-illuminated-headlight-sunset_181624-60607.jpg",
-            fetchStories()
+            image = "https://img.freepik.com/free-photo/luxurious-car-parked-highway-with-illuminated-headlight-sunset_181624-60607.jpg",
+            stories = fetchStories(),
+            isMarketingCenter = true
         ),
         Highlight(
             2,
-            "https://img.freepik.com/premium-photo/car-positioned-against-solid-backdrop_931878-223622.jpg",
-            fetchStories()
+            image = "https://img.freepik.com/premium-photo/car-positioned-against-solid-backdrop_931878-223622.jpg",
+            stories = fetchStories()
         ),
         Highlight(
             3,
-            "https://img.freepik.com/free-photo/view-3d-car-with-city_23-2151005377.jpg",
-            fetchStories()
+            image = "https://img.freepik.com/free-photo/view-3d-car-with-city_23-2151005377.jpg",
+            stories = fetchStories()
         ),
         Highlight(
             4,
-            "https://img.freepik.com/free-photo/view-three-dimensional-car-with-nature-landscape_23-2151005321.jpg",
-            fetchStories()
+            image = "https://img.freepik.com/free-photo/view-three-dimensional-car-with-nature-landscape_23-2151005321.jpg",
+            stories = fetchStories()
         ),
         Highlight(
             5,
-            "https://img.freepik.com/premium-photo/black-ford-sedan-parked-cobblestone-street_899870-20049.jpg",
-            fetchStories()
+            image = "https://img.freepik.com/premium-photo/black-ford-sedan-parked-cobblestone-street_899870-20049.jpg",
+            stories = fetchStories()
+        ),
+        Highlight(
+            -1,
+            title = "Все события",
+            image = "https://img.freepik.com/premium-photo/black-ford-sedan-parked-cobblestone-street_899870-20049.jpg",
+            stories = emptyList()
         )
     )
 

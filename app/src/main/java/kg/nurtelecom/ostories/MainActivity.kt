@@ -8,6 +8,7 @@ import androidx.core.view.marginStart
 import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
 import kg.nurtelecom.ostories.databinding.ActivityMainBinding
+import kg.nurtelecom.ostories.model.StoryMock
 import kg.nurtelecom.ostories.story.StoryFragment
 
 class MainActivity : AppCompatActivity() {
@@ -17,6 +18,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
+        binding.oStories.setUp(StoryMock.fetchHighlights())
         with(binding) {
             btn.setOnClickListener {
                 showFragment(StoryFragment.newInstance(), StoryFragment.TAG)

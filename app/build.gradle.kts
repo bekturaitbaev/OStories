@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "kg.nurtelecom.ostories"
-        minSdk = 22
+        minSdk = 23
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -50,4 +50,5 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.16.0")
 
     implementation("androidx.fragment:fragment-ktx:1.6.2")
+    implementation("com.github.ealmaz:DesignChili2:0.0.0.263")
 }

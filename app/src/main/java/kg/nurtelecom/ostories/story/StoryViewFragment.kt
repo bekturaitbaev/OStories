@@ -3,13 +3,11 @@ package kg.nurtelecom.ostories.story
 import android.content.Context
 import android.os.Bundle
 import android.util.AttributeSet
-import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
-import androidx.core.view.GestureDetectorCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
@@ -100,7 +98,7 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
 
     private fun loadImage(story: Story?) = with(binding) {
         progress.pause()
-        storyImage.loadImage(story?.image) {
+        ivStory.loadImage(story?.image) {
             if (this@StoryViewFragment.isResumed) {
                 story?.isWatched = true
                 progress.resume()
