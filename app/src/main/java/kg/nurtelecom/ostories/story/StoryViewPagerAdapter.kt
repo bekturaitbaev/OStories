@@ -123,10 +123,6 @@ class StoryViewPagerAdapter: RecyclerView.Adapter<StoryViewPagerAdapter.StoryVie
 
         private fun loadImage(story: Story) = with(binding) {
             progress.pause()
-            storyImage.loadImage(story.image) {
-                story.isWatched = true
-                progress.resume()
-            }
         }
 
     }

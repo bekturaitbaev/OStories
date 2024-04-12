@@ -22,8 +22,6 @@
             android:id="@+id/album_art_image_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:elevation="10dp"
-            android:outlineProvider="none"
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/demo_album" />
 

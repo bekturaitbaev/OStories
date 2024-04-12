@@ -34,15 +34,15 @@ class StoryFragment() : Fragment(), OStoriesListener {
     private fun setUpViewPager() = with(binding) {
         val highlights = StoryMock.fetchHighlights()
         val adapter = StoryViewViewPagerAdapter(childFragmentManager, lifecycle, this@StoryFragment, highlights)
-        viewPager.adapter = adapter
-        viewPager.offscreenPageLimit = 1
-        viewPager.setPageTransformer(CubeTransformer())
-        viewPager.registerOnPageChangeCallback(object : OnPageChangeCallback() {
-            override fun onPageScrollStateChanged(state: Int) {
-                super.onPageScrollStateChanged(state)
-                viewModel.onScrollStateChange(state)
-            }
-        })
+//        viewPager.adapter = adapter
+//        viewPager.offscreenPageLimit = 1
+//        viewPager.setPageTransformer(CubeTransformer())
+//        viewPager.registerOnPageChangeCallback(object : OnPageChangeCallback() {
+//            override fun onPageScrollStateChanged(state: Int) {
+//                super.onPageScrollStateChanged(state)
+//                viewModel.onScrollStateChange(state)
+//            }
+//        })
     }
 
     override fun onDestroy() {
@@ -61,10 +61,10 @@ class StoryFragment() : Fragment(), OStoriesListener {
     }
 
     override fun onStoryCompleted() {
-        binding.viewPager.currentItem += 1
+//        binding.viewPager.currentItem += 1
     }
 
     override fun onStoryStartReached() {
-        binding.viewPager.currentItem -= 1
+//        binding.viewPager.currentItem -= 1
     }
 }

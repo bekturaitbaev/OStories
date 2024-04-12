@@ -11,7 +11,7 @@
         motion:duration="200"
         app:motionInterpolator="linear">
         <OnSwipe
-            app:dragDirection="dragUp"
+            app:dragDirection="dragDown"
             app:maxAcceleration="200"
             app:touchAnchorId="@+id/player_background_view"
             app:touchAnchorSide="top"/>
@@ -23,9 +23,9 @@
         motion:constraintSetEnd="@id/play_screen_expanded"
         app:duration="100"
         app:autoTransition="jumpToEnd"
-        app:motionInterpolator="easeInOut">
+        app:motionInterpolator="linear">
         <OnSwipe
-            app:dragDirection="dragDown"
+            app:dragDirection="dragUp"
             app:maxAcceleration="200"
             app:maxVelocity="100"
             app:touchAnchorId="@+id/player_background_view"
@@ -40,7 +40,7 @@
         motion:duration="100"
         app:motionInterpolator="linear">
         <OnSwipe
-            app:dragDirection="dragUp"
+            app:dragDirection="dragStart"
             app:maxAcceleration="200"
             app:touchAnchorId="@+id/player_background_view"
             app:touchAnchorSide="top" />

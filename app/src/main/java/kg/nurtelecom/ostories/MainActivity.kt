@@ -18,11 +18,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        binding.oStories.setUp(StoryMock.fetchHighlights())
+        binding.oStories.setUp(StoryMock.fetchHighlights(), supportFragmentManager)
         with(binding) {
             btn.setOnClickListener {
-                showFragment(StoryFragment.newInstance(), StoryFragment.TAG)
-    //            setupPlayScreenFragment(it.left, it.top)
+//                showFragment(StoryFragment.newInstance(), StoryFragment.TAG)
+                setupPlayScreenFragment(it.left, it.top)
             }
         }
 
