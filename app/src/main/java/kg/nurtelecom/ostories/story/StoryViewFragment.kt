@@ -1,8 +1,6 @@
 package kg.nurtelecom.ostories.story
 
-import android.content.Context
 import android.os.Bundle
-import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -16,6 +14,7 @@ import kg.nurtelecom.ostories.extensions.loadImage
 import kg.nurtelecom.ostories.model.Highlight
 import kg.nurtelecom.ostories.model.Story
 import kg.nurtelecom.ostories.progress.OStoriesProgressBarListener
+import kotlin.math.abs
 
 class StoryViewFragment : Fragment(), View.OnTouchListener {
 
@@ -26,7 +25,7 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
     private var touchStartTime = 0L
     private var lastFocusX = 0f
     private var lastFocusY = 0f
-    private var touchStillDown = false
+    private var isSwiping = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,9 +112,17 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
                 lastFocusY = event.y
                 touchStartTime = event.eventTime
                 binding.progress.pause()
-                touchStillDown = true
+                isSwiping = false
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                if (binding.cvStory.y > 0) {
+                    val dismissDialog = binding.cvStory.y >= binding.root.height/4
+                    if (dismissDialog) binding.progress.reset()
+                    else binding.progress.resume()
+                    listener?.onSwipeDownEnd(dismissDialog, binding.cvStory.top)
+                    animateToInitialPosition()
+                    return false
+                }
                 val touchEndTime = event.eventTime
                 binding.progress.resume()
                 if (touchEndTime - touchStartTime > TOUCH_DURATION) return false
@@ -127,8 +134,27 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
                 v?.performClick()
                 return true
             }
+            MotionEvent.ACTION_MOVE -> {
+                val deltaY = event.y - lastFocusY
+                val deltaX = event.x - lastFocusX
+                if (!isSwiping && deltaY > 15 && abs(deltaY) > abs(deltaX)) {
+                    listener?.onSwipeDown()
+                    isSwiping = true
+                }
+                if (binding.cvStory.y >= binding.root.height/3 && deltaY > 0) return false
+                if (binding.cvStory.y <= 0 && deltaY < 0) return false
+                if (isSwiping) binding.cvStory.y += deltaY
+            }
         }
         return true
+    }
+
+    private fun animateToInitialPosition() {
+        binding.cvStory
+            .animate()
+            .setDuration(200L)
+            .translationY(0f)
+            .start()
     }
 
     companion object {
@@ -142,10 +168,4 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
                 highlight = item
             }
     }
-}
-
-class MyView(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0): View(context, attrs, defStyle) {
-
-
-
 }

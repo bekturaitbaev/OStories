@@ -14,7 +14,7 @@ class StoryViewViewPagerAdapter(
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
     override fun getItemCount(): Int {
-        return storiesList.size
+        return storiesList.size - 1
     }
 
     override fun createFragment(position: Int): Fragment {

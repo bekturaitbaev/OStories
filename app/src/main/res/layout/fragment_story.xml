@@ -5,26 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/transparent"
-    app:layoutDescription="@xml/play_screen_motion_scene"
-    app:layout_collapseMode="parallax">
+    app:layoutDescription="@xml/story_scene">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/player_background_view"
-        android:layout_width="86dp"
-        android:layout_height="86dp"
-        android:background="@color/black_1"
-        android:descendantFocusability="blocksDescendants"
-        app:cardBackgroundColor="@color/black_1"
-        app:cardCornerRadius="0dp"
-        app:cardElevation="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/view_pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </androidx.cardview.widget.CardView>
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager"
+        android:layout_width="@dimen/view_80dp"
+        android:layout_height="@dimen/view_80dp"
+        android:background="@color/black_1"/>
 
 </androidx.constraintlayout.motion.widget.MotionLayout>

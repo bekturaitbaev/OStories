@@ -18,7 +18,6 @@ class OStoriesView @JvmOverloads constructor(
     )
 
     private val adapter: HighlightsAdapter by lazy { HighlightsAdapter() }
-    private val storyDialogFragment: StoryDialogFragment by lazy { StoryDialogFragment() }
 
     private var highlights: List<Highlight> = emptyList()
     private var fragmentManager: FragmentManager? = null
@@ -35,12 +34,13 @@ class OStoriesView @JvmOverloads constructor(
     }
 
     private fun setUpClicks() {
-        adapter.setOnHighlightClickListener {
+        adapter.setOnHighlightClickListener { position, view ->
             StoryDialogFragment.showDialog(
                 fragmentManager = fragmentManager
                     ?: throw NullPointerException("FragmentManager is null"),
-                0,
-                0
+                position,
+                view.left,
+                view.top
             )
         }
     }

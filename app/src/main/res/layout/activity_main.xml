@@ -11,17 +11,4 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <Button
-        style="@style/Chili.ButtonStyle.Accent"
-        android:id="@+id/btn"
-        android:layout_width="86dp"
-        android:layout_height="86dp"
-        android:layout_gravity="center_horizontal|bottom"
-        android:text="Start"/>
-
-    <FrameLayout
-        android:id="@+id/play_screen_frame_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="com.google.android.material.bottomsheet. BottomSheetBehavior" />
 </FrameLayout>

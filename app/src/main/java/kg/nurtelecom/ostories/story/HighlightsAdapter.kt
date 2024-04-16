@@ -1,6 +1,7 @@
 package kg.nurtelecom.ostories.story
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -14,9 +15,9 @@ import kg.nurtelecom.ostories.model.Highlight
 
 class HighlightsAdapter: ListAdapter<Highlight, RecyclerView.ViewHolder>(DiffUtils()) {
 
-    private var onHighlightClickListener: ((item: Highlight) -> Unit)? = null
+    private var onHighlightClickListener: ((position: Int, view: View) -> Unit)? = null
 
-    fun setOnHighlightClickListener(listener: ((item: Highlight) -> Unit)) {
+    fun setOnHighlightClickListener(listener: ((position: Int, view: View) -> Unit)) {
         this.onHighlightClickListener = listener
     }
 
@@ -63,19 +64,19 @@ class HighlightsAdapter: ListAdapter<Highlight, RecyclerView.ViewHolder>(DiffUti
 
 class HighlightsVH(
     private val binding: ItemHighlightBinding,
-    private val onHighlightClickListener: ((item: Highlight) -> Unit)?
+    private val onHighlightClickListener: ((position: Int, view: View) -> Unit)?
 ): RecyclerView.ViewHolder(binding.root) {
     fun bind(item: Highlight) = with(binding) {
         tvTitle.text = item.title
         ivHighlight.loadImage(item.image)
 
         root.setOnSingleClickListener {
-            onHighlightClickListener?.invoke(item)
+            onHighlightClickListener?.invoke(bindingAdapterPosition, root)
         }
     }
 
     companion object {
-        fun create(parent: ViewGroup, onHighlightClickListener: ((item: Highlight) -> Unit)?) = HighlightsVH(
+        fun create(parent: ViewGroup, onHighlightClickListener: ((position: Int, view: View) -> Unit)?) = HighlightsVH(
             ItemHighlightBinding.inflate(LayoutInflater.from(parent.context), parent, false),
             onHighlightClickListener
         )
@@ -84,18 +85,18 @@ class HighlightsVH(
 
 class MoreHighlightsVH(
     private val binding: ItemHighlightMoreBinding,
-    private val onHighlightClickListener: ((item: Highlight) -> Unit)?
+    private val onHighlightClickListener: ((position: Int, view: View) -> Unit)?
 ): RecyclerView.ViewHolder(binding.root) {
     fun bind(item: Highlight) = with(binding) {
         tvTitle.text = item.title
 
         root.setOnSingleClickListener {
-            onHighlightClickListener?.invoke(item)
+            onHighlightClickListener?.invoke(bindingAdapterPosition, root)
         }
     }
 
     companion object {
-        fun create(parent: ViewGroup, onHighlightClickListener: ((item: Highlight) -> Unit)?) = MoreHighlightsVH(
+        fun create(parent: ViewGroup, onHighlightClickListener: ((position: Int, view: View) -> Unit)?) = MoreHighlightsVH(
             ItemHighlightMoreBinding.inflate(LayoutInflater.from(parent.context), parent, false),
             onHighlightClickListener
         )
@@ -104,19 +105,19 @@ class MoreHighlightsVH(
 
 class MCHighlightsVH(
     private val binding: ItemHighlightMarketingBinding,
-    private val onHighlightClickListener: ((item: Highlight) -> Unit)?
+    private val onHighlightClickListener: ((position: Int, view: View) -> Unit)?
 ): RecyclerView.ViewHolder(binding.root) {
     fun bind(item: Highlight) = with(binding) {
         tvTitle.text = item.title
         ivHighlight.loadImage(item.image)
 
         root.setOnSingleClickListener {
-            onHighlightClickListener?.invoke(item)
+            onHighlightClickListener?.invoke(bindingAdapterPosition, root)
         }
     }
 
     companion object {
-        fun create(parent: ViewGroup, onHighlightClickListener: ((item: Highlight) -> Unit)?) = MCHighlightsVH(
+        fun create(parent: ViewGroup, onHighlightClickListener: ((position: Int, view: View) -> Unit)?) = MCHighlightsVH(
             ItemHighlightMarketingBinding.inflate(LayoutInflater.from(parent.context), parent, false),
             onHighlightClickListener
         )
