@@ -1,14 +1,24 @@
 package kg.nurtelecom.ostories.story
 
+import android.animation.ObjectAnimator
+import android.graphics.LinearGradient
+import android.graphics.Shader
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
+import androidx.core.animation.doOnEnd
+import androidx.core.animation.doOnStart
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
+import com.design2.chili2.extensions.dpF
+import com.design2.chili2.extensions.setTextOrHide
+import kg.nurtelecom.ostories.R
 import kg.nurtelecom.ostories.databinding.FragmentStoryViewBinding
 import kg.nurtelecom.ostories.extensions.loadImage
 import kg.nurtelecom.ostories.model.Highlight
@@ -26,10 +36,7 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
     private var lastFocusX = 0f
     private var lastFocusY = 0f
     private var isSwiping = false
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private var isDescriptionExpanded = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,6 +49,7 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        changeDescriptionColor()
         setUpClicks()
         setUpOStoriesProgressBar(getIndexToShow())
 
@@ -64,6 +72,40 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
         viewRight.setOnTouchListener(this@StoryViewFragment)
     }
 
+    private fun changeDescriptionColor() {
+        if (isDescriptionExpanded) {
+            binding.tvDescription.paint.shader = null
+            return
+        }
+        val gradient = LinearGradient(
+            0f,
+            0f,
+            0f,
+            60.dpF,
+            ContextCompat.getColor(requireContext(), R.color.white),
+            ContextCompat.getColor(requireContext(), android.R.color.transparent),
+            Shader.TileMode.CLAMP
+        )
+        binding.tvDescription.paint.shader = gradient
+    }
+
+    private fun animateDescription() = with(binding) {
+        val lineCount = if (isDescriptionExpanded) 3 else tvDescription.lineCount
+        viewStory.background = ContextCompat.getDrawable(
+            requireContext(),
+            if (isDescriptionExpanded) R.drawable.background_story_view_gradient
+            else R.drawable.background_story_view_alpha70
+        )
+        isDescriptionExpanded = !isDescriptionExpanded
+        val animator = ObjectAnimator.ofInt(binding.tvDescription, "maxLines", lineCount)
+        animator.run {
+            duration = 200L
+            if (!isDescriptionExpanded) doOnEnd { changeDescriptionColor() }
+            else doOnStart { changeDescriptionColor() }
+            start()
+        }
+    }
+
     private fun setUpOStoriesProgressBar(position: Int) = with(binding.progress) {
         segmentCount = highlight?.stories?.count() ?: 0
         binding.progress.listener = oStoriesProgressBarListener
@@ -73,7 +115,7 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
 
     private val oStoriesProgressBarListener = object : OStoriesProgressBarListener {
         override fun onSegmentChange(oldSegmentIndex: Int, newSegmentIndex: Int) {
-            loadImage(highlight?.stories?.get(newSegmentIndex))
+            loadData(highlight?.stories?.get(newSegmentIndex))
         }
         override fun onCompleted() {
             listener?.onStoryCompleted()
@@ -95,8 +137,9 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
         binding.progress.pause()
     }
 
-    private fun loadImage(story: Story?) = with(binding) {
+    private fun loadData(story: Story?) = with(binding) {
         progress.pause()
+        tvDescription.setTextOrHide(story?.description)
         ivStory.loadImage(story?.image) {
             if (this@StoryViewFragment.isResumed) {
                 story?.isWatched = true
@@ -115,6 +158,13 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
                 isSwiping = false
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                val deltaX = event.x - lastFocusX
+                val deltaY = event.y - lastFocusY
+                if (isDescriptionExpanded && deltaY > 60) {
+                    animateDescription()
+                    binding.progress.resume()
+                    return true
+                }
                 if (binding.cvStory.y > 0) {
                     val dismissDialog = binding.cvStory.y >= binding.root.height/4
                     if (dismissDialog) binding.progress.reset()
@@ -123,12 +173,14 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
                     animateToInitialPosition()
                     return false
                 }
+                if (deltaY < -60 && abs(deltaY) > abs(deltaX) && binding.tvDescription.isVisible) {
+                    animateDescription()
+                    return true
+                }
                 val touchEndTime = event.eventTime
                 binding.progress.resume()
                 if (touchEndTime - touchStartTime > TOUCH_DURATION) return false
                 val touchSlopeSquare = ViewConfiguration.get(requireContext()).scaledTouchSlop
-                val deltaX = event.x - lastFocusX
-                val deltaY = event.y - lastFocusY
                 val slope = deltaX * deltaX + deltaY * deltaY
                 if (slope > touchSlopeSquare) return false
                 v?.performClick()
@@ -137,7 +189,7 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
             MotionEvent.ACTION_MOVE -> {
                 val deltaY = event.y - lastFocusY
                 val deltaX = event.x - lastFocusX
-                if (!isSwiping && deltaY > 15 && abs(deltaY) > abs(deltaX)) {
+                if (!isSwiping && !isDescriptionExpanded && deltaY > 15 && abs(deltaY) > abs(deltaX)) {
                     listener?.onSwipeDown()
                     isSwiping = true
                 }

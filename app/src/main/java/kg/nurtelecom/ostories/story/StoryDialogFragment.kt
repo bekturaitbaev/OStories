@@ -1,8 +1,5 @@
 package kg.nurtelecom.ostories.story
 
-import android.animation.ArgbEvaluator
-import android.animation.ObjectAnimator
-import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -14,13 +11,10 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import kg.nurtelecom.ostories.R
 import kg.nurtelecom.ostories.databinding.FragmentStoryBinding
 import kg.nurtelecom.ostories.model.StoryMock
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class StoryDialogFragment: DialogFragment(), OStoriesListener {
 
