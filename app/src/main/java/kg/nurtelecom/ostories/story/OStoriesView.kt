@@ -11,7 +11,7 @@ import java.lang.NullPointerException
 
 class OStoriesView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyle: Int = 0
-) : FrameLayout(context, attrs, defStyle) {
+) : FrameLayout(context, attrs, defStyle), OStoriesRecyclerViewListener {
 
     private val binding: ViewOstoriesBinding = ViewOstoriesBinding.inflate(
         LayoutInflater.from(context), this, true
@@ -36,12 +36,26 @@ class OStoriesView @JvmOverloads constructor(
     private fun setUpClicks() {
         adapter.setOnHighlightClickListener { position, view ->
             StoryDialogFragment.showDialog(
-                fragmentManager = fragmentManager
-                    ?: throw NullPointerException("FragmentManager is null"),
+                fragmentManager = fragmentManager ?: throw NullPointerException("FragmentManager is null"),
                 position,
                 view.left,
-                view.top
+                view.top,
+                this
             )
         }
     }
+
+    override fun scrollToPosition(position: Int) {
+        binding.recyclerView.smoothScrollToPosition(position)
+    }
+
+    override fun getItemViewBounds(position: Int): Pair<Int, Int> {
+        val view = binding.recyclerView.findViewHolderForAdapterPosition(position)?.itemView
+        return Pair(view?.left ?: 0, view?.top ?: 0)
+    }
+}
+
+interface OStoriesRecyclerViewListener {
+    fun scrollToPosition(position: Int)
+    fun getItemViewBounds(position: Int): Pair<Int, Int>
 }

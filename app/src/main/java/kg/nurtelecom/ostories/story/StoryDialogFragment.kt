@@ -4,6 +4,8 @@ import android.animation.ArgbEvaluator
 import android.animation.ObjectAnimator
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,15 +14,20 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import kg.nurtelecom.ostories.R
 import kg.nurtelecom.ostories.databinding.FragmentStoryBinding
 import kg.nurtelecom.ostories.model.StoryMock
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class StoryDialogFragment: DialogFragment(), OStoriesListener {
 
     private lateinit var binding: FragmentStoryBinding
     private val viewModel: StorySharedViewModel by viewModels()
+    private var listener: OStoriesRecyclerViewListener? = null
+    private var handler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,16 +54,21 @@ class StoryDialogFragment: DialogFragment(), OStoriesListener {
             val posX = bundle.getInt(POS_X)
             val posY = bundle.getInt(POS_Y)
 
-            binding.rootLayout.getConstraintSet(R.id.story_minimized_set)?.let {
-                it.setMargin(binding.viewPager.id, ConstraintSet.START, posX + 10)
-                it.setMargin(binding.viewPager.id, ConstraintSet.TOP, posY + 10)
-            }
+            changeStoryStartConstraintSet(Pair(posX, posY))
+        }
+    }
+
+    private fun changeStoryStartConstraintSet(pair: Pair<Int, Int>?) {
+        binding.rootLayout.getConstraintSet(R.id.story_minimized_set)?.let {
+            it.setMargin(binding.viewPager.id, ConstraintSet.START, (pair?.first ?: 0) + 10)
+            it.setMargin(binding.viewPager.id, ConstraintSet.TOP, (pair?.second ?: 0) + 10)
+            binding.viewPager.requestLayout()
         }
     }
 
     override fun onResume() {
         super.onResume()
-        binding.rootLayout.post { binding.root.performClick() }
+        handler.postDelayed({ binding.rootLayout.transitionToEnd() }, 200L)
     }
 
     private fun setUpViewPager() = with(binding) {
@@ -77,12 +89,18 @@ class StoryDialogFragment: DialogFragment(), OStoriesListener {
             super.onPageScrollStateChanged(state)
             viewModel.onScrollStateChange(state)
         }
+
+        override fun onPageSelected(position: Int) {
+            super.onPageSelected(position)
+            listener?.scrollToPosition(position)
+        }
     }
 
-    override fun onDestroy() {
+    override fun onDestroy() = with(binding) {
         super.onDestroy()
-        binding.rootLayout.removeTransitionListener(transitionListener)
-        binding.viewPager.unregisterOnPageChangeCallback(onPageChangeCallback)
+        handler.removeCallbacksAndMessages(null)
+        rootLayout.removeTransitionListener(transitionListener)
+        viewPager.unregisterOnPageChangeCallback(onPageChangeCallback)
     }
 
     override fun onStoryCompleted() {
@@ -97,21 +115,12 @@ class StoryDialogFragment: DialogFragment(), OStoriesListener {
         with(binding) {
             viewPager.isUserInputEnabled = true
             if (!dismissDialog) return@with
-            animateBackgroundColor()
-            rootLayout.getConstraintSet(R.id.story_expanded_set)
-                .setMargin(viewPager.id, ConstraintSet.TOP, posY)
-            rootLayout.post { rootLayout.transitionToStart() }
+            val pair = listener?.getItemViewBounds(viewPager.currentItem)
+            changeStoryStartConstraintSet(pair)
+            rootLayout.post {
+                rootLayout.performClick()
+            }
         }
-    }
-
-    private fun animateBackgroundColor() {
-        ObjectAnimator.ofObject(
-            binding.viewPager,
-            "backgroundColor",
-            ArgbEvaluator(),
-            com.design2.chili2.R.color.black_1,
-            Color.TRANSPARENT
-        ).setDuration(50L).start()
     }
 
     override fun onSwipeDown() {
@@ -145,7 +154,7 @@ class StoryDialogFragment: DialogFragment(), OStoriesListener {
         private const val POS_X = "POS_X"
         private const val POS_Y = "POS_Y"
 
-        fun showDialog(fragmentManager: FragmentManager, itemPosition: Int, posX: Int, posY: Int) {
+        fun showDialog(fragmentManager: FragmentManager, itemPosition: Int, posX: Int, posY: Int, listener: OStoriesRecyclerViewListener) {
             val args = Bundle().apply {
                 putInt(POS_X, posX)
                 putInt(POS_Y, posY)
@@ -154,6 +163,7 @@ class StoryDialogFragment: DialogFragment(), OStoriesListener {
             val storyDialogFragment = StoryDialogFragment().apply {
                 arguments = args
             }
+            storyDialogFragment.listener = listener
             storyDialogFragment.show(fragmentManager, TAG)
         }
     }

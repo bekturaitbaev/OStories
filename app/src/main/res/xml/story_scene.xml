@@ -7,7 +7,7 @@
         android:id="@+id/start_transition"
         motion:constraintSetStart="@id/story_minimized_set"
         motion:constraintSetEnd="@id/story_expanded_set"
-        motion:duration="200"
+        motion:duration="300"
         app:motionInterpolator="linear">
         <OnClick
             app:dragDirection="dragDown"
@@ -21,8 +21,22 @@
                 app:framePosition="1"/>
             <KeyAttribute
                 app:motionTarget="@id/view_pager"
-                android:alpha="0.9"
+                android:alpha="0.8"
                 app:framePosition="10"/>
+            <KeyAttribute
+                app:motionTarget="@id/view_pager"
+                app:framePosition="100">
+                <CustomAttribute
+                    app:attributeName="backgroundColor"
+                    app:customColorValue="@color/black_1" />
+            </KeyAttribute>
+            <KeyAttribute
+                app:motionTarget="@id/view_pager"
+                app:framePosition="80">
+                <CustomAttribute
+                    app:attributeName="backgroundColor"
+                    app:customColorValue="@android:color/transparent" />
+            </KeyAttribute>
         </KeyFrameSet>
     </Transition>
 
