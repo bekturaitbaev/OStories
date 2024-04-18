@@ -1,8 +1,23 @@
+import org.gradle.api.publish.PublishingExtension
+
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("maven-publish")
 }
+configure<PublishingExtension> {
+    publications {
+        register<MavenPublication>("release") {
+            groupId = "kg.nurtelecom.ostories"
+            artifactId = "stories"
+            version = "0.0.1"
 
+            afterEvaluate {
+                from(components["release"])
+            }
+        }
+    }
+}
 android {
     namespace = "kg.nurtelecom.ostories.stories"
     compileSdk = 34
@@ -32,6 +47,11 @@ android {
     }
     buildFeatures {
         viewBinding = true
+    }
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+        }
     }
 }
 

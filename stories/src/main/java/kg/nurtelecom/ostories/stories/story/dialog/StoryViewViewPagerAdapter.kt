@@ -1,10 +1,11 @@
-package kg.nurtelecom.ostories.stories.story
+package kg.nurtelecom.ostories.stories.story.dialog
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import kg.nurtelecom.ostories.stories.model.Highlight
+import kg.nurtelecom.ostories.stories.story.OStoriesListener
 
 class StoryViewViewPagerAdapter(
     fragmentManager: FragmentManager,

@@ -1,7 +1,9 @@
-package kg.nurtelecom.ostories.stories.progress
+package kg.nurtelecom.ostories.stories.extensions
 
 import android.graphics.Paint
 import android.graphics.RectF
+import kg.nurtelecom.ostories.stories.progress.OStoriesProgressBar
+import kg.nurtelecom.ostories.stories.model.Segment
 
 fun OStoriesProgressBar.getDrawingComponents(
     segment: Segment,

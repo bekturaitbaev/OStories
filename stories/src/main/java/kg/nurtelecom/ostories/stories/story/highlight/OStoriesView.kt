@@ -1,4 +1,4 @@
-package kg.nurtelecom.ostories.stories.story
+package kg.nurtelecom.ostories.stories.story.highlight
 
 import android.content.Context
 import android.util.AttributeSet
@@ -7,6 +7,7 @@ import android.widget.FrameLayout
 import androidx.fragment.app.FragmentManager
 import kg.nurtelecom.ostories.stories.databinding.ViewOstoriesBinding
 import kg.nurtelecom.ostories.stories.model.Highlight
+import kg.nurtelecom.ostories.stories.story.dialog.StoryDialogFragment
 import java.lang.NullPointerException
 
 class OStoriesView @JvmOverloads constructor(

@@ -1,4 +1,4 @@
-package kg.nurtelecom.ostories.stories.story
+package kg.nurtelecom.ostories.stories.story.dialog
 
 import android.os.Bundle
 import android.os.Handler
@@ -16,6 +16,10 @@ import com.design2.chili2.extensions.dp
 import kg.nurtelecom.ostories.stories.R
 import kg.nurtelecom.ostories.stories.databinding.FragmentStoryBinding
 import kg.nurtelecom.ostories.stories.model.StoryMock
+import kg.nurtelecom.ostories.stories.story.OStoriesListener
+import kg.nurtelecom.ostories.stories.story.StorySharedViewModel
+import kg.nurtelecom.ostories.stories.story.TransitionState
+import kg.nurtelecom.ostories.stories.story.highlight.OStoriesRecyclerViewListener
 
 class StoryDialogFragment : DialogFragment(), OStoriesListener {
 

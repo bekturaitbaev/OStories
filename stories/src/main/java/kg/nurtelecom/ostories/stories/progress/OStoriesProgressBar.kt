@@ -9,6 +9,8 @@ import android.view.animation.LinearInterpolator
 import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
 import kg.nurtelecom.ostories.stories.R
+import kg.nurtelecom.ostories.stories.extensions.getDrawingComponents
+import kg.nurtelecom.ostories.stories.model.Segment
 
 class OStoriesProgressBar : View {
 

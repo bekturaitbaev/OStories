@@ -1,4 +1,4 @@
-package kg.nurtelecom.ostories.stories.story
+package kg.nurtelecom.ostories.stories.story.dialog
 
 import android.animation.ObjectAnimator
 import android.graphics.LinearGradient
@@ -24,6 +24,9 @@ import kg.nurtelecom.ostories.stories.extensions.loadImage
 import kg.nurtelecom.ostories.stories.model.Highlight
 import kg.nurtelecom.ostories.stories.model.Story
 import kg.nurtelecom.ostories.stories.progress.OStoriesProgressBarListener
+import kg.nurtelecom.ostories.stories.story.OStoriesListener
+import kg.nurtelecom.ostories.stories.story.StorySharedViewModel
+import kg.nurtelecom.ostories.stories.story.TransitionState
 import kotlin.math.abs
 
 class StoryViewFragment : Fragment(), View.OnTouchListener {

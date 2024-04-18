@@ -1,4 +1,4 @@
-package kg.nurtelecom.ostories.stories.progress
+package kg.nurtelecom.ostories.stories.model
 
 class Segment {
 

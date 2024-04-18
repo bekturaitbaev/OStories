@@ -1,4 +1,4 @@
-package kg.nurtelecom.ostories.stories.story
+package kg.nurtelecom.ostories.stories.story.highlight
 
 import android.view.LayoutInflater
 import android.view.View

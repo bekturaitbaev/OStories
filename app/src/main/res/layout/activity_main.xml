@@ -5,7 +5,7 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <kg.nurtelecom.ostories.stories.story.OStoriesView
+    <kg.nurtelecom.ostories.stories.story.highlight.OStoriesView
         android:id="@+id/o_stories"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
