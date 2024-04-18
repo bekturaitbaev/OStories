@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView android:layout_height="@dimen/view_80dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginStart="@dimen/padding_10dp"
+    android:layout_marginTop="5dp"
+    android:layout_width="@dimen/view_80dp"
+    app:cardCornerRadius="@dimen/padding_12dp"
+    app:cardElevation="@dimen/elevation_0dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/padding_4dp"
+            android:src="@drawable/ic_highlights_more"/>
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/Chili.H10.Primary.Bold"
+            android:textColor="@color/black_1"
+            android:layout_gravity="bottom"
+            android:lines="2"
+            android:gravity="center_vertical"
+            android:layout_marginStart="@dimen/view_8dp"
+            android:layout_marginBottom="@dimen/padding_8dp"
+            android:layout_marginEnd="@dimen/padding_2dp"
+            tools:text="Все события"/>
+
+</androidx.cardview.widget.CardView>
