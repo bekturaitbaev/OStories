@@ -52,12 +52,23 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
         changeDescriptionColor()
         setUpClicks()
         setUpOStoriesProgressBar(getIndexToShow())
+        observe()
+    }
 
+    private fun observe() = with(binding) {
         viewModel.vpScrollStateLD.observe(requireParentFragment().viewLifecycleOwner) {
             when(it) {
                 ViewPager2.SCROLL_STATE_DRAGGING -> binding.progress.pause()
                 ViewPager2.SCROLL_STATE_IDLE -> binding.progress.resume()
             }
+        }
+
+        viewModel.transitionAnimationLD.observe(requireParentFragment().viewLifecycleOwner) {
+            val visible = it != TransitionState.ANIMATING
+            progress.isVisible = visible
+            tvDescription.isVisible = visible
+            tvTitle.isVisible = visible
+            btnAction.isVisible = visible
         }
     }
 
@@ -81,7 +92,7 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
             0f,
             0f,
             0f,
-            60.dpF,
+            DESCRIPTION_GRADIENT_HEIGHT.dpF,
             ContextCompat.getColor(requireContext(), R.color.white),
             ContextCompat.getColor(requireContext(), android.R.color.transparent),
             Shader.TileMode.CLAMP
@@ -90,7 +101,7 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
     }
 
     private fun animateDescription() = with(binding) {
-        val lineCount = if (isDescriptionExpanded) 3 else tvDescription.lineCount
+        val lineCount = if (isDescriptionExpanded) LINE_COUNT else tvDescription.lineCount
         viewStory.background = ContextCompat.getDrawable(
             requireContext(),
             if (isDescriptionExpanded) R.drawable.background_story_view_gradient
@@ -99,7 +110,7 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
         isDescriptionExpanded = !isDescriptionExpanded
         val animator = ObjectAnimator.ofInt(binding.tvDescription, "maxLines", lineCount)
         animator.run {
-            duration = 200L
+            duration = RETURN_ANIMATION_DURATION
             if (!isDescriptionExpanded) doOnEnd { changeDescriptionColor() }
             else doOnStart { changeDescriptionColor() }
             start()
@@ -160,7 +171,7 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 val deltaX = event.x - lastFocusX
                 val deltaY = event.y - lastFocusY
-                if (isDescriptionExpanded && deltaY > 60) {
+                if (isDescriptionExpanded && deltaY > SWIPE_DISTANCE) {
                     animateDescription()
                     binding.progress.resume()
                     return true
@@ -173,7 +184,7 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
                     animateToInitialPosition()
                     return false
                 }
-                if (deltaY < -60 && abs(deltaY) > abs(deltaX) && binding.tvDescription.isVisible) {
+                if (deltaY < -SWIPE_DISTANCE && abs(deltaY) > abs(deltaX) && binding.tvDescription.isVisible) {
                     animateDescription()
                     return true
                 }
@@ -189,7 +200,7 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
             MotionEvent.ACTION_MOVE -> {
                 val deltaY = event.y - lastFocusY
                 val deltaX = event.x - lastFocusX
-                if (!isSwiping && !isDescriptionExpanded && deltaY > 15 && abs(deltaY) > abs(deltaX)) {
+                if (!isSwiping && !isDescriptionExpanded && deltaY > REPEL_HEIGHT && abs(deltaY) > abs(deltaX)) {
                     listener?.onSwipeDown()
                     isSwiping = true
                 }
@@ -204,7 +215,7 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
     private fun animateToInitialPosition() {
         binding.cvStory
             .animate()
-            .setDuration(200L)
+            .setDuration(RETURN_ANIMATION_DURATION)
             .translationY(0f)
             .start()
     }
@@ -212,6 +223,11 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
     companion object {
 
         private const val TOUCH_DURATION = 500L
+        private const val RETURN_ANIMATION_DURATION = 200L
+        private const val REPEL_HEIGHT = 15
+        private const val SWIPE_DISTANCE = 60
+        private const val LINE_COUNT = 3
+        private const val DESCRIPTION_GRADIENT_HEIGHT = 60
 
         @JvmStatic
         fun newInstance(item: Highlight, listener: OStoriesListener) =

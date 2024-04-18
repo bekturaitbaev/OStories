@@ -12,6 +12,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
+import com.design2.chili2.extensions.dp
 import kg.nurtelecom.ostories.R
 import kg.nurtelecom.ostories.databinding.FragmentStoryBinding
 import kg.nurtelecom.ostories.model.StoryMock
@@ -54,15 +55,15 @@ class StoryDialogFragment: DialogFragment(), OStoriesListener {
 
     private fun changeStoryStartConstraintSet(pair: Pair<Int, Int>?) {
         binding.rootLayout.getConstraintSet(R.id.story_minimized_set)?.let {
-            it.setMargin(binding.viewPager.id, ConstraintSet.START, (pair?.first ?: 0) + 10)
-            it.setMargin(binding.viewPager.id, ConstraintSet.TOP, (pair?.second ?: 0) + 10)
+            it.setMargin(binding.viewPager.id, ConstraintSet.START, (pair?.first ?: 0) + DEFAULT_STORY_MARGIN.dp)
+            it.setMargin(binding.viewPager.id, ConstraintSet.TOP, (pair?.second ?: 0) + DEFAULT_STORY_MARGIN.dp)
             binding.viewPager.requestLayout()
         }
     }
 
     override fun onResume() {
         super.onResume()
-        handler.postDelayed({ binding.rootLayout.transitionToEnd() }, 200L)
+        handler.postDelayed({ binding.rootLayout.transitionToEnd() }, ANIMATION_DELAY)
     }
 
     private fun setUpViewPager() = with(binding) {
@@ -83,7 +84,6 @@ class StoryDialogFragment: DialogFragment(), OStoriesListener {
             super.onPageScrollStateChanged(state)
             viewModel.onScrollStateChange(state)
         }
-
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)
             listener?.scrollToPosition(position)
@@ -122,7 +122,9 @@ class StoryDialogFragment: DialogFragment(), OStoriesListener {
     }
 
     private val transitionListener = object: MotionLayout.TransitionListener {
-        override fun onTransitionStarted(motionLayout: MotionLayout?, startId: Int, endId: Int) {}
+        override fun onTransitionStarted(motionLayout: MotionLayout?, startId: Int, endId: Int) {
+            viewModel.setTransitionState(TransitionState.ANIMATING)
+        }
         override fun onTransitionChange(
             motionLayout: MotionLayout?,
             startId: Int,
@@ -130,6 +132,7 @@ class StoryDialogFragment: DialogFragment(), OStoriesListener {
             progress: Float
         ) {}
         override fun onTransitionCompleted(motionLayout: MotionLayout?, currentId: Int) {
+            viewModel.setTransitionState(TransitionState.ENDED)
             when(currentId) {
                 R.id.story_minimized_set -> { dismiss() }
             }
@@ -143,10 +146,12 @@ class StoryDialogFragment: DialogFragment(), OStoriesListener {
     }
 
     companion object {
-        const val TAG = "StoryDialogFragment"
+        private const val TAG = "StoryDialogFragment"
         private const val ITEM_POSITION = "ITEM_POSITION"
         private const val POS_X = "POS_X"
         private const val POS_Y = "POS_Y"
+        private const val ANIMATION_DELAY = 200L
+        private const val DEFAULT_STORY_MARGIN = 5
 
         fun showDialog(fragmentManager: FragmentManager, itemPosition: Int, posX: Int, posY: Int, listener: OStoriesRecyclerViewListener) {
             val args = Bundle().apply {
