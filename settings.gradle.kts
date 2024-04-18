@@ -16,4 +16,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "OStories"
 include(":app")
- 
+include(":stories")

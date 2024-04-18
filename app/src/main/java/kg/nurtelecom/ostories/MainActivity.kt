@@ -1,11 +1,9 @@
 package kg.nurtelecom.ostories
 
-import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AppCompatActivity
 import kg.nurtelecom.ostories.databinding.ActivityMainBinding
-import kg.nurtelecom.ostories.model.StoryMock
+import kg.nurtelecom.ostories.stories.model.StoryMock
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,9 +17,4 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
     }
 
-}
-
-fun Context.toDp(px: Float): Int {
-    val density = resources.displayMetrics.density
-    return (px*density).toInt()
 }
