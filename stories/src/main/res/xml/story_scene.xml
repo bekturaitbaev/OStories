@@ -7,7 +7,7 @@
         android:id="@+id/start_transition"
         motion:constraintSetStart="@id/story_minimized_set"
         motion:constraintSetEnd="@id/story_expanded_set"
-        motion:duration="300"
+        motion:duration="200"
         app:motionInterpolator="linear">
         <OnClick
             app:dragDirection="dragDown"

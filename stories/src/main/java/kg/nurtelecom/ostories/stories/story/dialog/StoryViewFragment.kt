@@ -3,6 +3,7 @@ package kg.nurtelecom.ostories.stories.story.dialog
 import android.animation.ObjectAnimator
 import android.graphics.LinearGradient
 import android.graphics.Shader
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -61,8 +62,8 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
     private fun observe() = with(binding) {
         viewModel.vpScrollStateLD.observe(requireParentFragment().viewLifecycleOwner) {
             when(it) {
-                ViewPager2.SCROLL_STATE_DRAGGING -> binding.progress.pause()
-                ViewPager2.SCROLL_STATE_IDLE -> binding.progress.resume()
+                ViewPager2.SCROLL_STATE_DRAGGING -> progress.pause()
+                ViewPager2.SCROLL_STATE_IDLE -> progress.resume()
             }
         }
 
@@ -72,10 +73,14 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
             tvDescription.isVisible = visible
             tvTitle.isVisible = visible
             btnAction.isVisible = visible
+            tvForYou.isVisible = visible && highlight?.isMarketingCenter == true
+            clStoryView.background = if (visible && highlight?.isMarketingCenter == true) {
+                ContextCompat.getDrawable(requireContext(), R.drawable.background_story_view_stroke)
+            } else null
         }
     }
 
-    private fun getIndexToShow() = highlight?.stories?.indexOfFirst { !it.isWatched }?.let {
+    private fun getIndexToShow() = highlight?.stories?.indexOfFirst { !it.isViewed }?.let {
         if (it == -1) 0 else it
     } ?: 0
 
@@ -156,7 +161,7 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
         tvDescription.setTextOrHide(story?.description)
         ivStory.loadImage(story?.image) {
             if (this@StoryViewFragment.isResumed) {
-                story?.isWatched = true
+                story?.isViewed = true
                 progress.resume()
             }
         }
@@ -174,7 +179,7 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 val deltaX = event.x - lastFocusX
                 val deltaY = event.y - lastFocusY
-                if (isDescriptionExpanded && deltaY > SWIPE_DISTANCE) {
+                if (isDescriptionExpanded) {
                     animateDescription()
                     binding.progress.resume()
                     return true

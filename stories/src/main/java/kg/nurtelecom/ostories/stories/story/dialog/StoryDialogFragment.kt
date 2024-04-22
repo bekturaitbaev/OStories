@@ -15,6 +15,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.design2.chili2.extensions.dp
 import kg.nurtelecom.ostories.stories.R
 import kg.nurtelecom.ostories.stories.databinding.FragmentStoryBinding
+import kg.nurtelecom.ostories.stories.model.Highlight
 import kg.nurtelecom.ostories.stories.model.StoryMock
 import kg.nurtelecom.ostories.stories.story.OStoriesListener
 import kg.nurtelecom.ostories.stories.story.StorySharedViewModel
@@ -27,6 +28,7 @@ class StoryDialogFragment : DialogFragment(), OStoriesListener {
     private val viewModel: StorySharedViewModel by viewModels()
     private var listener: OStoriesRecyclerViewListener? = null
     private var handler = Handler(Looper.getMainLooper())
+    private var highlights: List<Highlight> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,7 +81,6 @@ class StoryDialogFragment : DialogFragment(), OStoriesListener {
     }
 
     private fun setUpViewPager() = with(binding) {
-        val highlights = StoryMock.fetchHighlights()
         val storyAdapter = StoryViewViewPagerAdapter(
             childFragmentManager,
             lifecycle,
@@ -115,8 +116,9 @@ class StoryDialogFragment : DialogFragment(), OStoriesListener {
         viewPager.unregisterOnPageChangeCallback(onPageChangeCallback)
     }
 
-    override fun onStoryCompleted() {
-        binding.viewPager.currentItem += 1
+    override fun onStoryCompleted() = with(binding.viewPager) {
+        if (currentItem == highlights.size - 1) onSwipeDownEnd(true, 0)
+        else currentItem += 1
     }
 
     override fun onStoryStartReached() {
@@ -181,6 +183,7 @@ class StoryDialogFragment : DialogFragment(), OStoriesListener {
         fun showDialog(
             fragmentManager: FragmentManager,
             itemPosition: Int,
+            highlights: List<Highlight>,
             posX: Int,
             posY: Int,
             listener: OStoriesRecyclerViewListener
@@ -191,6 +194,7 @@ class StoryDialogFragment : DialogFragment(), OStoriesListener {
                 putInt(ITEM_POSITION, itemPosition)
             }
             val storyDialogFragment = StoryDialogFragment().apply {
+                this.highlights = highlights
                 arguments = args
             }
             storyDialogFragment.listener = listener
