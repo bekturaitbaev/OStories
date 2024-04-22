@@ -17,6 +17,12 @@ configure<PublishingExtension> {
             }
         }
     }
+    repositories {
+        maven {
+            name = "ostories"
+            url = uri("${project.buildDir}/repo")
+        }
+    }
 }
 android {
     namespace = "kg.nurtelecom.ostories.stories"
