@@ -61,30 +61,30 @@ class OStoriesProgressBar : View {
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
         val typedArray =
-            context.theme.obtainStyledAttributes(attrs, R.styleable.SegmentedProgressBar, 0, 0)
+            context.theme.obtainStyledAttributes(attrs, R.styleable.OStoriesProgressBar, 0, 0)
         typedArray.run {
-            segmentCount = getInt(R.styleable.SegmentedProgressBar_totalSegments, segmentCount)
+            segmentCount = getInt(R.styleable.OStoriesProgressBar_totalSegments, segmentCount)
             margin = getDimensionPixelSize(
-                    R.styleable.SegmentedProgressBar_segmentMargins,
+                    R.styleable.OStoriesProgressBar_segmentMargins,
                     margin
                 )
             radius = getDimensionPixelSize(
-                    R.styleable.SegmentedProgressBar_segmentCornerRadius,
+                    R.styleable.OStoriesProgressBar_segmentCornerRadius,
                     radius
                 )
             segmentBackgroundColor = ContextCompat.getColor(context,
                 getResourceId(
-                    R.styleable.SegmentedProgressBar_segmentBackgroundColor,
+                    R.styleable.OStoriesProgressBar_segmentBackgroundColor,
                     R.color.grey_progress_background
                 ))
             segmentSelectedBackgroundColor = ContextCompat.getColor(context,
                 getResourceId(
-                    R.styleable.SegmentedProgressBar_segmentSelectedBackgroundColor,
+                    R.styleable.OStoriesProgressBar_segmentSelectedBackgroundColor,
                     R.color.grey_progress_selected_color
                 )
             )
             timePerSegmentMs = getInt(
-                    R.styleable.SegmentedProgressBar_timePerSegment,
+                    R.styleable.OStoriesProgressBar_timePerSegment,
                     timePerSegmentMs.toInt()
                 ).toLong()
             recycle()

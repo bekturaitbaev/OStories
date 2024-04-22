@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="SegmentedProgressBar">
+    <declare-styleable name="OStoriesProgressBar">
         <attr name="totalSegments" format="integer" />
         <attr name="timePerSegment" format="integer" />
         <attr name="segmentMargins" format="dimension" />

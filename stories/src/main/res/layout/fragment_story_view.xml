@@ -54,9 +54,9 @@
             android:text="@string/for_you"
             android:textColor="@color/white_1"
             android:visibility="gone"
-            app:drawableStartCompat="@drawable/ic_heart_white_12dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/progress" />
+            app:layout_constraintTop_toBottomOf="@id/progress"
+            app:drawableStartCompat="@drawable/ic_heart_white_12dp" />
 
         <View
             android:id="@+id/view_story"
@@ -109,11 +109,10 @@
 
         <Button
             android:id="@+id/btn_action"
-            style="@style/Chili.ButtonStyle.Accent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            style="@style/Chili.ButtonStyle.Accent"
             android:layout_margin="@dimen/padding_16dp"
-            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:text="Детали" />
 

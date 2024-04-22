@@ -41,13 +41,11 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/Chili.H10.Primary.Bold"
                 android:textColor="@color/white_1"
-                android:layout_gravity="bottom"
                 android:lines="2"
                 android:gravity="center_vertical"
                 android:layout_marginStart="@dimen/view_8dp"
                 android:layout_marginBottom="@dimen/padding_8dp"
                 android:layout_marginEnd="@dimen/padding_2dp"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 tools:text="Все события"/>
 

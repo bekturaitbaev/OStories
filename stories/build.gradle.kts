@@ -65,6 +65,6 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
     implementation("androidx.fragment:fragment-ktx:1.6.2")
-    implementation("com.github.ealmaz:DesignChili2:0.0.0.263")
+    implementation("com.github.ealmaz:DesignChili2:0.0.0.270")
     implementation("com.github.bumptech.glide:glide:4.16.0")
 }

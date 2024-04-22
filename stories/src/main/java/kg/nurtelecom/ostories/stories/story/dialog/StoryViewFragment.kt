@@ -3,6 +3,7 @@ package kg.nurtelecom.ostories.stories.story.dialog
 import android.animation.ObjectAnimator
 import android.graphics.LinearGradient
 import android.graphics.Shader
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -178,7 +179,7 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 val deltaX = event.x - lastFocusX
                 val deltaY = event.y - lastFocusY
-                if (isDescriptionExpanded && deltaY > SWIPE_DISTANCE) {
+                if (isDescriptionExpanded) {
                     animateDescription()
                     binding.progress.resume()
                     return true
