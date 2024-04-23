@@ -11,6 +11,6 @@
         android:id="@+id/view_pager"
         android:layout_width="@dimen/view_80dp"
         android:layout_height="@dimen/view_80dp"
-        android:background="@android:color/transparent"/>
+        android:background="@android:color/transparent" />
 
 </androidx.constraintlayout.motion.widget.MotionLayout>

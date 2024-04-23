@@ -10,7 +10,6 @@ import kg.nurtelecom.ostories.stories.R
 import kg.nurtelecom.ostories.stories.databinding.ViewOstoriesBinding
 import kg.nurtelecom.ostories.stories.model.Highlight
 import kg.nurtelecom.ostories.stories.story.dialog.StoryDialogFragment
-import java.lang.NullPointerException
 
 class OStoriesView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyle: Int = 0

@@ -23,6 +23,7 @@ class StorySharedViewModel: ViewModel() {
 }
 
 enum class TransitionState {
-    ANIMATING,
-    ENDED
+    EXPANDED,
+    MINIMIZED,
+    ANIMATING
 }

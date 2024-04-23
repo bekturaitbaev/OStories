@@ -56,7 +56,19 @@ class StoryDialogFragment : DialogFragment(), OStoriesListener {
             val posY = bundle.getInt(POS_Y)
 
             changeStoryStartConstraintSet(Pair(posX, posY))
+            animateViewPagerAlpha(true)
         }
+    }
+
+    private fun animateViewPagerAlpha(isStarting: Boolean) = with(binding) {
+        viewPager.animate()
+            .setDuration(100L)
+            .alpha(if (isStarting) 0.3f else 0f)
+            .withEndAction {
+                if (isStarting) binding.rootLayout.transitionToEnd()
+                else dismiss()
+            }
+            .start()
     }
 
     private fun changeStoryStartConstraintSet(pair: Pair<Int, Int>?) {
@@ -77,7 +89,7 @@ class StoryDialogFragment : DialogFragment(), OStoriesListener {
 
     override fun onResume() {
         super.onResume()
-        handler.postDelayed({ binding.rootLayout.transitionToEnd() }, ANIMATION_DELAY)
+//        handler.postDelayed({ binding.rootLayout.transitionToEnd() }, ANIMATION_DELAY)
     }
 
     private fun setUpViewPager() = with(binding) {
@@ -155,10 +167,13 @@ class StoryDialogFragment : DialogFragment(), OStoriesListener {
         }
 
         override fun onTransitionCompleted(motionLayout: MotionLayout?, currentId: Int) {
-            viewModel.setTransitionState(TransitionState.ENDED)
             when (currentId) {
                 R.id.story_minimized_set -> {
-                    dismiss()
+                    viewModel.setTransitionState(TransitionState.MINIMIZED)
+                    animateViewPagerAlpha(false)
+                }
+                R.id.story_expanded_set -> {
+                    viewModel.setTransitionState(TransitionState.EXPANDED)
                 }
             }
         }
@@ -177,7 +192,7 @@ class StoryDialogFragment : DialogFragment(), OStoriesListener {
         private const val ITEM_POSITION = "ITEM_POSITION"
         private const val POS_X = "POS_X"
         private const val POS_Y = "POS_Y"
-        private const val ANIMATION_DELAY = 200L
+        private const val ANIMATION_DELAY = 100L
         private const val DEFAULT_STORY_MARGIN = 5
 
         fun showDialog(
