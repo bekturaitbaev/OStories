@@ -17,11 +17,11 @@
         <KeyFrameSet>
             <KeyAttribute
                 app:motionTarget="@id/view_pager"
-                android:alpha="0"
+                android:alpha="0.3"
                 app:framePosition="1"/>
             <KeyAttribute
                 app:motionTarget="@id/view_pager"
-                android:alpha="0.8"
+                android:alpha="1"
                 app:framePosition="10"/>
             <KeyAttribute
                 app:motionTarget="@id/view_pager"
@@ -57,7 +57,7 @@
             android:id="@id/view_pager"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:alpha="0"
+            android:alpha="0.3"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </ConstraintSet>

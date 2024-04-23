@@ -3,7 +3,6 @@ package kg.nurtelecom.ostories.stories.story.dialog
 import android.animation.ObjectAnimator
 import android.graphics.LinearGradient
 import android.graphics.Shader
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -18,6 +17,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.design2.chili2.extensions.dpF
+import com.design2.chili2.extensions.setOnSingleClickListener
 import com.design2.chili2.extensions.setTextOrHide
 import kg.nurtelecom.ostories.stories.R
 import kg.nurtelecom.ostories.stories.databinding.FragmentStoryViewBinding
@@ -68,11 +68,12 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
         }
 
         viewModel.transitionAnimationLD.observe(requireParentFragment().viewLifecycleOwner) {
-            val visible = it != TransitionState.ANIMATING
+            val visible = it == TransitionState.EXPANDED
             progress.isVisible = visible
             tvDescription.isVisible = visible
             tvTitle.isVisible = visible
             btnAction.isVisible = visible
+            ivClose.isVisible = visible
             tvForYou.isVisible = visible && highlight?.isMarketingCenter == true
             clStoryView.background = if (visible && highlight?.isMarketingCenter == true) {
                 ContextCompat.getDrawable(requireContext(), R.drawable.background_story_view_stroke)
@@ -85,6 +86,9 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
     } ?: 0
 
     private fun setUpClicks() = with(binding) {
+        ivClose.setOnSingleClickListener {
+            listener?.onSwipeDownEnd(true, cvStory.top)
+        }
         viewLeft.setOnClickListener { progress.previous() }
         viewRight.setOnClickListener { progress.next() }
         viewLeft.setOnTouchListener(this@StoryViewFragment)

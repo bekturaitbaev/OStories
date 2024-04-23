@@ -112,6 +112,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/Chili.ButtonStyle.Accent"
+            android:visibility="gone"
             android:layout_margin="@dimen/padding_16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:text="Детали" />
