@@ -69,7 +69,7 @@ class HighlightsVH(
     fun bind(item: Highlight) = with(binding) {
         tvTitle.text = item.title
         ivHighlight.loadImage(item.image)
-        if (item.borderColors.isNotEmpty()) highlighter.setHighlighterGradientColors(item.borderColors)
+        if (!item.borderColors.isNullOrEmpty()) highlighter.setHighlighterGradientColors(item.borderColors)
 
         root.setOnSingleClickListener {
             onHighlightClickListener?.invoke(bindingAdapterPosition, root)

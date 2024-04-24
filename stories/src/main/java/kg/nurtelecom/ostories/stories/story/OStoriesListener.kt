@@ -9,4 +9,6 @@ interface OStoriesListener {
     fun onSwipeDownEnd(dismissDialog: Boolean, posY: Int)
 
     fun onSwipeDown()
+
+    fun onStoryViewed(storyId: Long)
 }

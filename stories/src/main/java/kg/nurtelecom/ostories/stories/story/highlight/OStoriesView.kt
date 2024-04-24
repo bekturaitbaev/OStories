@@ -10,6 +10,7 @@ import kg.nurtelecom.ostories.stories.R
 import kg.nurtelecom.ostories.stories.databinding.ViewOstoriesBinding
 import kg.nurtelecom.ostories.stories.model.Highlight
 import kg.nurtelecom.ostories.stories.story.dialog.StoryDialogFragment
+import java.io.Serializable
 
 class OStoriesView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyle: Int = 0
@@ -20,15 +21,20 @@ class OStoriesView @JvmOverloads constructor(
     )
 
     private var onMoreItemsClickedListener: (() -> Unit)? = null
+    private var onStoryViewedListener: ((storyId: Long) -> Unit)? = null
 
     private val adapter: HighlightsAdapter by lazy { HighlightsAdapter() }
 
-    private var highlights: MutableList<Highlight> = mutableListOf()
+    private var highlights: ArrayList<Highlight> = arrayListOf()
     private var fragmentManager: FragmentManager? = null
     private var isMoreItemVisible = true
 
     init {
         setUpClicks()
+    }
+
+    fun setOnStoryViewedListener(listener: ((storyId: Long) -> Unit)) {
+        this.onStoryViewedListener = listener
     }
 
     fun setOnMoreItemsClickedListener(listener: (() -> Unit)) {
@@ -59,7 +65,7 @@ class OStoriesView @JvmOverloads constructor(
     }
 
     private fun showStoryDialogFragment(position: Int, view: View) {
-        val items = if (highlights.isNotEmpty() && isMoreItemVisible) highlights.subList(0, highlights.size - 1)
+        val items: ArrayList<Highlight> = if (highlights.isNotEmpty() && isMoreItemVisible) ArrayList(highlights.subList(0, highlights.size - 1))
         else highlights
         StoryDialogFragment.showDialog(
             fragmentManager = fragmentManager
@@ -80,9 +86,15 @@ class OStoriesView @JvmOverloads constructor(
         val view = binding.recyclerView.findViewHolderForAdapterPosition(position)?.itemView
         return Pair(view?.left ?: 0, view?.top ?: 0)
     }
+
+    override fun onStoryViewed(storyId: Long) {
+        onStoryViewedListener?.invoke(storyId)
+    }
 }
 
-interface OStoriesRecyclerViewListener {
+interface OStoriesRecyclerViewListener: Serializable {
     fun scrollToPosition(position: Int)
     fun getItemViewBounds(position: Int): Pair<Int, Int>
+
+    fun onStoryViewed(storyId: Long)
 }
