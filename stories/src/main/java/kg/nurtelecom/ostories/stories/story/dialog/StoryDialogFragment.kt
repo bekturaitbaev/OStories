@@ -2,8 +2,6 @@ package kg.nurtelecom.ostories.stories.story.dialog
 
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,13 +30,12 @@ class StoryDialogFragment : DialogFragment(), OStoriesListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            listener = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                it.getSerializable(O_STORIES_LISTENER, OStoriesRecyclerViewListener::class.java)
-            else it.getSerializable(O_STORIES_LISTENER) as OStoriesRecyclerViewListener
-            highlights = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                it.getParcelableArrayList(HIGHLIGHTS, Highlight::class.java)?.toList() ?: emptyList()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                listener = it.getSerializable(O_STORIES_LISTENER, OStoriesRecyclerViewListener::class.java)
+                highlights = it.getParcelableArrayList(HIGHLIGHTS, Highlight::class.java)?.toList() ?: emptyList()
             } else {
-                it.getParcelableArrayList<Highlight>(HIGHLIGHTS)?.toList() ?: emptyList()
+                listener = it.getSerializable(O_STORIES_LISTENER) as OStoriesRecyclerViewListener
+                highlights = it.getParcelableArrayList<Highlight>(HIGHLIGHTS)?.toList() ?: emptyList()
             }
         }
         setStyle(STYLE_NORMAL, R.style.FullScreenDialog)

@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="OStoriesProgressBar">
-        <attr name="totalSegments" format="integer" />
-        <attr name="timePerSegment" format="integer" />
-        <attr name="segmentMargins" format="dimension" />
+        <attr name="segmentCount" format="integer" />
+        <attr name="segmentDuration" format="integer" />
+        <attr name="segmentSpace" format="dimension" />
         <attr name="segmentCornerRadius" format="dimension" />
-        <attr name="segmentStrokeWidth" format="dimension" />
         <attr name="segmentBackgroundColor" format="color" />
         <attr name="segmentSelectedBackgroundColor" format="color" />
     </declare-styleable>

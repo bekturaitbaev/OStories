@@ -86,7 +86,7 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
             btnAction.isVisible = visible
             ivClose.isVisible = visible
             tvForYou.isVisible = visible && highlight?.isMarketingCenter == true
-            clStoryView.background = if (visible && highlight?.isMarketingCenter == true) {
+            cvStory.foreground = if (visible && highlight?.isMarketingCenter == true) {
                 ContextCompat.getDrawable(requireContext(), R.drawable.background_story_view_stroke)
             } else null
         }
