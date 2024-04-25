@@ -1,8 +1,10 @@
 package kg.nurtelecom.ostories.stories.story.dialog
 
 import android.animation.ObjectAnimator
+import android.content.Context
 import android.graphics.LinearGradient
 import android.graphics.Shader
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -42,6 +44,15 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
     private var isSwiping = false
     private var isDescriptionExpanded = false
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            highlight = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                it.getParcelable(HIGHLIGHT, Highlight::class.java)
+            else it.getParcelable(HIGHLIGHT)
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -75,7 +86,7 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
             btnAction.isVisible = visible
             ivClose.isVisible = visible
             tvForYou.isVisible = visible && highlight?.isMarketingCenter == true
-            clStoryView.background = if (visible && highlight?.isMarketingCenter == true) {
+            cvStory.foreground = if (visible && highlight?.isMarketingCenter == true) {
                 ContextCompat.getDrawable(requireContext(), R.drawable.background_story_view_stroke)
             } else null
         }
@@ -139,6 +150,7 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
     private val oStoriesProgressBarListener = object : OStoriesProgressBarListener {
         override fun onSegmentChange(oldSegmentIndex: Int, newSegmentIndex: Int) {
             loadData(highlight?.stories?.get(newSegmentIndex))
+            listener?.onStoryViewed(highlight?.stories?.getOrNull(oldSegmentIndex)?.id ?: return)
         }
         override fun onCompleted() {
             listener?.onStoryCompleted()
@@ -147,6 +159,11 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
         override fun onStartReached() {
             listener?.onStoryStartReached()
         }
+    }
+
+    override fun onDestroy() {
+        binding.progress.listener = null
+        super.onDestroy()
     }
 
     override fun onResume() {
@@ -234,6 +251,7 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
 
     companion object {
 
+        private const val HIGHLIGHT = "EXTRA_HIGHLIGHT"
         private const val TOUCH_DURATION = 500L
         private const val RETURN_ANIMATION_DURATION = 200L
         private const val REPEL_HEIGHT = 15
@@ -242,10 +260,14 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
         private const val DESCRIPTION_GRADIENT_HEIGHT = 60
 
         @JvmStatic
-        fun newInstance(item: Highlight, listener: OStoriesListener) =
-            StoryViewFragment().apply {
-                this.listener = listener
-                highlight = item
+        fun newInstance(item: Highlight, listener: OStoriesListener): StoryViewFragment {
+            val bundle = Bundle().apply {
+                putParcelable(HIGHLIGHT, item)
             }
+            return StoryViewFragment().apply {
+                arguments = bundle
+                this.listener = listener
+            }
+        }
     }
 }

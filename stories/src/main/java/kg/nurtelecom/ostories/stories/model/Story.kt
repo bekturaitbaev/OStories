@@ -1,32 +1,53 @@
 package kg.nurtelecom.ostories.stories.model
 
-data class Story(
-    val id: Long? = null,
-    val orderNumber: Int? = null,
-    val title: String? = null,
-    val description: String? = null,
-    val image: String? = null,
-    val buttonModel: ButtonModel? = null,
-    var isViewed: Boolean = false,
-    val bannerImage: String? = null
-)
+import android.os.Parcel
+import android.os.Parcelable
 
 data class Highlight(
     val id: Long? = null,
     val orderNumber: Int? = null,
     val title: String? = null,
     val image: String? = null,
-    val stories: List<Story> = emptyList(),
+    val stories: java.util.ArrayList<Story>? = arrayListOf(),
     val isMarketingCenter: Boolean = false,
-    val borderColors: List<String> = emptyList()
-)
+    val borderColors: java.util.ArrayList<String>? = arrayListOf()
+): Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readValue(Long::class.java.classLoader) as? Long,
+        parcel.readValue(Int::class.java.classLoader) as? Int,
+        parcel.readString(),
+        parcel.readString(),
+        parcel.createTypedArrayList(Story),
+        parcel.readByte() != 0.toByte(),
+        parcel.createStringArrayList()
+    ) {
+    }
 
-data class ButtonModel(
-    val title: String? = null,
-    val deepLink: String? = null,
-    val titleColor: String? = null,
-    val backgroundColor: String? = null
-)
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeValue(id)
+        parcel.writeValue(orderNumber)
+        parcel.writeString(title)
+        parcel.writeString(image)
+        parcel.writeTypedList(stories)
+        parcel.writeByte(if (isMarketingCenter) 1 else 0)
+        parcel.writeStringList(borderColors)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Highlight> {
+        override fun createFromParcel(parcel: Parcel): Highlight {
+            return Highlight(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Highlight?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
+
 
 object StoryMock {
     fun fetchHighlights() = listOf(
@@ -58,7 +79,7 @@ object StoryMock {
         )
     )
 
-    fun fetchStories() = listOf(
+    fun fetchStories() = arrayListOf(
         Story(
             1,
             0,

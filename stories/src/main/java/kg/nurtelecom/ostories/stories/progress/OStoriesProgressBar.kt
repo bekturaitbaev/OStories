@@ -63,9 +63,9 @@ class OStoriesProgressBar : View {
         val typedArray =
             context.theme.obtainStyledAttributes(attrs, R.styleable.OStoriesProgressBar, 0, 0)
         typedArray.run {
-            segmentCount = getInt(R.styleable.OStoriesProgressBar_totalSegments, segmentCount)
+            segmentCount = getInt(R.styleable.OStoriesProgressBar_segmentCount, segmentCount)
             margin = getDimensionPixelSize(
-                    R.styleable.OStoriesProgressBar_segmentMargins,
+                    R.styleable.OStoriesProgressBar_segmentSpace,
                     margin
                 )
             radius = getDimensionPixelSize(
@@ -84,7 +84,7 @@ class OStoriesProgressBar : View {
                 )
             )
             timePerSegmentMs = getInt(
-                    R.styleable.OStoriesProgressBar_timePerSegment,
+                    R.styleable.OStoriesProgressBar_segmentDuration,
                     timePerSegmentMs.toInt()
                 ).toLong()
             recycle()

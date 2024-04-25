@@ -1,8 +1,7 @@
 package kg.nurtelecom.ostories.stories.story.dialog
 
+import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +15,6 @@ import com.design2.chili2.extensions.dp
 import kg.nurtelecom.ostories.stories.R
 import kg.nurtelecom.ostories.stories.databinding.FragmentStoryBinding
 import kg.nurtelecom.ostories.stories.model.Highlight
-import kg.nurtelecom.ostories.stories.model.StoryMock
 import kg.nurtelecom.ostories.stories.story.OStoriesListener
 import kg.nurtelecom.ostories.stories.story.StorySharedViewModel
 import kg.nurtelecom.ostories.stories.story.TransitionState
@@ -27,11 +25,19 @@ class StoryDialogFragment : DialogFragment(), OStoriesListener {
     private lateinit var binding: FragmentStoryBinding
     private val viewModel: StorySharedViewModel by viewModels()
     private var listener: OStoriesRecyclerViewListener? = null
-    private var handler = Handler(Looper.getMainLooper())
     private var highlights: List<Highlight> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        arguments?.let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                listener = it.getSerializable(O_STORIES_LISTENER, OStoriesRecyclerViewListener::class.java)
+                highlights = it.getParcelableArrayList(HIGHLIGHTS, Highlight::class.java)?.toList() ?: emptyList()
+            } else {
+                listener = it.getSerializable(O_STORIES_LISTENER) as OStoriesRecyclerViewListener
+                highlights = it.getParcelableArrayList<Highlight>(HIGHLIGHTS)?.toList() ?: emptyList()
+            }
+        }
         setStyle(STYLE_NORMAL, R.style.FullScreenDialog)
     }
 
@@ -62,8 +68,8 @@ class StoryDialogFragment : DialogFragment(), OStoriesListener {
 
     private fun animateViewPagerAlpha(isStarting: Boolean) = with(binding) {
         viewPager.animate()
-            .setDuration(100L)
-            .alpha(if (isStarting) 0.3f else 0f)
+            .setDuration(ANIMATION_DELAY)
+            .alpha(if (isStarting) VIEW_PAGER_ALPHA else 0f)
             .withEndAction {
                 if (isStarting) binding.rootLayout.transitionToEnd()
                 else dismiss()
@@ -85,11 +91,6 @@ class StoryDialogFragment : DialogFragment(), OStoriesListener {
             )
             binding.viewPager.requestLayout()
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-//        handler.postDelayed({ binding.rootLayout.transitionToEnd() }, ANIMATION_DELAY)
     }
 
     private fun setUpViewPager() = with(binding) {
@@ -123,7 +124,6 @@ class StoryDialogFragment : DialogFragment(), OStoriesListener {
 
     override fun onDestroy() = with(binding) {
         super.onDestroy()
-        handler.removeCallbacksAndMessages(null)
         rootLayout.removeTransitionListener(transitionListener)
         viewPager.unregisterOnPageChangeCallback(onPageChangeCallback)
     }
@@ -147,6 +147,10 @@ class StoryDialogFragment : DialogFragment(), OStoriesListener {
                 rootLayout.performClick()
             }
         }
+    }
+
+    override fun onStoryViewed(storyId: Long) {
+        listener?.onStoryViewed(storyId)
     }
 
     override fun onSwipeDown() {
@@ -192,13 +196,16 @@ class StoryDialogFragment : DialogFragment(), OStoriesListener {
         private const val ITEM_POSITION = "ITEM_POSITION"
         private const val POS_X = "POS_X"
         private const val POS_Y = "POS_Y"
+        private const val HIGHLIGHTS = "HIGHLIGHTS"
+        private const val O_STORIES_LISTENER = "RECYCLERVIEW_LISTENER"
         private const val ANIMATION_DELAY = 100L
         private const val DEFAULT_STORY_MARGIN = 5
+        private const val VIEW_PAGER_ALPHA = 0.4f
 
         fun showDialog(
             fragmentManager: FragmentManager,
             itemPosition: Int,
-            highlights: List<Highlight>,
+            highlights: ArrayList<Highlight>,
             posX: Int,
             posY: Int,
             listener: OStoriesRecyclerViewListener
@@ -207,13 +214,13 @@ class StoryDialogFragment : DialogFragment(), OStoriesListener {
                 putInt(POS_X, posX)
                 putInt(POS_Y, posY)
                 putInt(ITEM_POSITION, itemPosition)
+                putParcelableArrayList(HIGHLIGHTS, highlights)
+                putSerializable(O_STORIES_LISTENER, listener)
             }
-            val storyDialogFragment = StoryDialogFragment().apply {
-                this.highlights = highlights
+            StoryDialogFragment().apply {
                 arguments = args
+                show(fragmentManager, TAG)
             }
-            storyDialogFragment.listener = listener
-            storyDialogFragment.show(fragmentManager, TAG)
         }
     }
 }
