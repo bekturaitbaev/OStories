@@ -2,6 +2,7 @@ package kg.nurtelecom.ostories.stories.story.dialog
 
 import android.animation.ObjectAnimator
 import android.content.Context
+import android.graphics.Color
 import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.os.Build
@@ -24,6 +25,7 @@ import com.design2.chili2.extensions.setTextOrHide
 import kg.nurtelecom.ostories.stories.R
 import kg.nurtelecom.ostories.stories.databinding.FragmentStoryViewBinding
 import kg.nurtelecom.ostories.stories.extensions.loadImage
+import kg.nurtelecom.ostories.stories.model.ButtonModel
 import kg.nurtelecom.ostories.stories.model.Highlight
 import kg.nurtelecom.ostories.stories.model.Story
 import kg.nurtelecom.ostories.stories.progress.OStoriesProgressBarListener
@@ -180,11 +182,25 @@ class StoryViewFragment : Fragment(), View.OnTouchListener {
     private fun loadData(story: Story?) = with(binding) {
         progress.pause()
         tvDescription.setTextOrHide(story?.description)
+        setUpButton(story?.buttonModel)
         ivStory.loadImage(story?.image) {
             if (this@StoryViewFragment.isResumed) {
                 story?.isViewed = true
                 progress.resume()
             }
+        }
+    }
+
+    private fun setUpButton(buttonModel: ButtonModel?) = with(binding.btnAction) {
+        if (buttonModel == null) {
+            isVisible = false
+            return@with
+        }
+        text = buttonModel.title
+        setTextColor(Color.parseColor(buttonModel.titleColor))
+        setBackgroundColor(Color.parseColor(buttonModel.backgroundColor))
+        setOnSingleClickListener {
+            listener?.onDeepLinkClick(buttonModel.deepLink)
         }
     }
 

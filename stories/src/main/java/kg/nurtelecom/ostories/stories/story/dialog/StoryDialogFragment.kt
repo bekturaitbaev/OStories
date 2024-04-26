@@ -153,6 +153,10 @@ class StoryDialogFragment : DialogFragment(), OStoriesListener {
         listener?.onStoryViewed(storyId)
     }
 
+    override fun onDeepLinkClick(link: String?) {
+        listener?.onDeeplinkClick(link)
+    }
+
     override fun onSwipeDown() {
         binding.viewPager.isUserInputEnabled = false
     }
