@@ -22,6 +22,7 @@ class OStoriesView @JvmOverloads constructor(
 
     private var onMoreItemsClickedListener: (() -> Unit)? = null
     private var onStoryViewedListener: ((storyId: Long) -> Unit)? = null
+    private var onDeeplinkClickListener: ((link: String?) -> Unit)? = null
 
     private val adapter: HighlightsAdapter by lazy { HighlightsAdapter() }
 
@@ -39,6 +40,10 @@ class OStoriesView @JvmOverloads constructor(
 
     fun setOnMoreItemsClickedListener(listener: (() -> Unit)) {
         this.onMoreItemsClickedListener = listener
+    }
+
+    fun setOnDeeplinkClickListener(listener: ((link: String?) -> Unit)) {
+        this.onDeeplinkClickListener = listener
     }
 
     fun setUp(highlights: List<Highlight>, fragmentManager: FragmentManager, isMoreItemVisible: Boolean = true) {
@@ -90,11 +95,15 @@ class OStoriesView @JvmOverloads constructor(
     override fun onStoryViewed(storyId: Long) {
         onStoryViewedListener?.invoke(storyId)
     }
+
+    override fun onDeeplinkClick(link: String?) {
+        onDeeplinkClickListener?.invoke(link)
+    }
 }
 
 interface OStoriesRecyclerViewListener: Serializable {
     fun scrollToPosition(position: Int)
     fun getItemViewBounds(position: Int): Pair<Int, Int>
-
     fun onStoryViewed(storyId: Long)
+    fun onDeeplinkClick(link: String?)
 }

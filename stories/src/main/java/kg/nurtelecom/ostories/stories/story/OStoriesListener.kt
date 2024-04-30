@@ -11,4 +11,6 @@ interface OStoriesListener {
     fun onSwipeDown()
 
     fun onStoryViewed(storyId: Long)
+
+    fun onDeepLinkClick(link: String?)
 }
